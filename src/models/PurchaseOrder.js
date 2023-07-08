@@ -3,6 +3,7 @@ const { DataTypes } = require('sequelize');
 // Luego le injectamos la conexion a sequelize.
 module.exports = (sequelize) => {
   // defino el modelo
+
   sequelize.define('purchaseOrder', {
     id: {
       type: DataTypes.INTEGER,
@@ -12,6 +13,7 @@ module.exports = (sequelize) => {
     total: {
       type: DataTypes.FLOAT,
       allowNull: false,
-    },
-  },{timestamps: false});
+  
+  },
+},{timestamps: false});
 };
