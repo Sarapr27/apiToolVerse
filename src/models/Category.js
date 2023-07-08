@@ -4,9 +4,14 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('category', {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM("Electricidad", "Plomería", "Herramientas", "Materiales de construcción"),
       allowNull: false,
     },
-  });
+  },{timestamps: false});
 };

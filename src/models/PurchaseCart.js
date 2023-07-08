@@ -4,9 +4,14 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('purchaseCart', {
-    name: {
-      type: DataTypes.STRING,
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-  });
+  },{timestamps: false});
 };

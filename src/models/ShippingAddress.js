@@ -4,9 +4,31 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('shippingAddress', {
-    name: {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    country: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-  });
+    state: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    postalCode: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+  },{timestamps: false});
 };
