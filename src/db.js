@@ -39,6 +39,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
+
 const { Category, PaymentMethod, Product, PurchaseCart, PurchaseDetail, PurchaseOrder, ShippingAddress, User } = sequelize.models;
 
 // Aca vendrian las relaciones
@@ -69,6 +70,7 @@ PurchaseDetail.belongsTo(PurchaseOrder);
 //9--> Producto - Detalle de compra
 Product.hasMany(PurchaseDetail);
 PurchaseDetail.belongsTo(Product);
+
 
 module.exports = {
    ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
