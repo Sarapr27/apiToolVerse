@@ -63,8 +63,79 @@ try {
 }
 };
 
+/* ----------------------------------- */
+/* POST ENDPOINTS                       */
+/* ----------------------------------- */
+
+const createOneProduct = async (obj) => {
+    try {
+        const product = await Product.findOrCreate({
+            where: {
+                brand: obj.brand,
+                name: obj.name,
+                model: obj.model,
+                detail: obj.detail,
+                price: obj.price,
+                image: obj.image,
+            }
+        });
+        return product;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+const createProducts = async(req, res) => {
+    const products = req.body;
+
+    try {
+        if(!products) throw new Error("Not products available");
+        if(!Array.isArray(products) && !(typeof products === "object" && products !== null)) throw new Error("products must be of type array or of type object");
+
+        const validateObject = (obj) => {
+            const modelObj = {
+                id: "number",
+                brand: "string",
+                name: "string",
+                model: "string",
+                detail: "string",
+                price: "number",
+                image: "string"
+            };
+            const errors = [];
+
+            for(const prop in modelObj) {
+                if(!obj.hasOwnProperty(prop)) {
+                    errors.push(`Falta la propiedad "${prop}".`);
+                }else if (typeof obj[prop] !== modelObj[prop]) {
+                    errors.push(`La propiedad "${prop}" tiene un tipo invalido. Se esperaba "${modelObj[prop]}", se recibio "${typeof obj[prop]}".`);
+                }
+            }
+        if(errors.length > 0) throw new Error(errors.join("\n"));
+        }
+
+        if(Array.isArray(products)){
+            products.forEach(el => {
+                validateObject(el);
+            });
+            for(let i = 0; i < products.length; i++){
+                await createOneProduct(products[i]);
+            }
+            res.status(200).send("Productos creados exitosamente");
+        }
+        else if(typeof products === "object" && products !== null){
+            validateObject(products);
+            await createOneProduct(products);
+            res.status(200).send("producto creado exitosamente");
+        }
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+};
 module.exports = {
     getAllProducts,
     getProductById,
-    getProductByName
+    getProductByName,
+    createProducts
 };
