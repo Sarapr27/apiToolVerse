@@ -44,10 +44,10 @@ const { Category, PaymentMethod, Product, PurchaseCart, PurchaseDetail, Purchase
 
 // Aca vendrian las relaciones
 //1--> Usuario - Carrito
-User.hasOne(PurchaseCart);
+User.hasMany(PurchaseCart);
 PurchaseCart.belongsTo(User);
 //2--> Usuario - Orden de compra
-User.hasOne(PurchaseOrder);
+User.hasMany(PurchaseOrder);
 PurchaseOrder.belongsTo(User);
 //3--> Usuario - Direccion de envio
 User.hasOne(ShippingAddress);
@@ -76,6 +76,9 @@ Review.belongsTo(User);
 //11--> Review - Product
 Product.hasMany(Review);
 Review.belongsTo(Product);
+//12--> Carrito - Orden de compra
+PurchaseCart.hasOne(PurchaseOrder);
+PurchaseOrder.belongsTo(PurchaseCart);
 
 
 module.exports = {
