@@ -95,7 +95,6 @@ const createProducts = async(req, res) => {
 
         const validateObject = (obj) => {
             const modelObj = {
-                id: "number",
                 brand: "string",
                 name: "string",
                 model: "string",
