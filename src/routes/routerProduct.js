@@ -8,10 +8,14 @@ const router = Router();
 /* Products                         */
 /* ----------------------------------- */
 
-router.route('/product').get(getAllProducts).post(createProducts)
-router.get('/product/name',getProductByName)
-router.route('/product/:id').get(getProductById)
+router.get("/products", (req, res) => {
+    if(req.query.name) getProductByName(req, res)
+    else getAllProducts(req, res)
+});
 
+router.get("/products/:id", getProductById);
+router.post("/products", createProducts);
 
 
 module.exports = router;
+
