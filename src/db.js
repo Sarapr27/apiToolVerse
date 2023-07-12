@@ -54,9 +54,9 @@ ShippingAddress.belongsTo(User);
 //4--> Carrito - Producto
 PurchaseCart.hasMany(Product);
 Product.belongsTo(PurchaseCart);
-//5--> Catergoria - Producto
-Category.hasMany(Product);
-Product.belongsTo(Category);
+//5--> Categoria - Producto
+Category.belongsToMany(Product, { through: "product_categories" });
+Product.belongsToMany(Category, { through: "product_categories" });
 //6--> Direccion de envio - Orden de compra
 ShippingAddress.hasMany(PurchaseOrder);
 PurchaseOrder.belongsTo(ShippingAddress);
