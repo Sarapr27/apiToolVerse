@@ -62,3 +62,11 @@ const deletePurchaseOrder = async (req, res) => {
         res.status(404).json({ error: error.message });
       }
 };
+
+
+module.exports = {
+    getAllPurchaseOrder,
+    getPurchaseOrderById,
+    createPurchaseOrder,
+    deletePurchaseOrder
+};
