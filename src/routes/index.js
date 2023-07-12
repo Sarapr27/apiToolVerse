@@ -5,6 +5,8 @@ const routerShippingAddress=require('./routerShippingAddress')
 const routerCategory=require('./routerCategory')
 const routerPaymentMethod=require('./routerPaymentMethod')
 const routerPurchaseCart=require('./routerPurchaseCart')
+const routerPurchaseOrder=require('./routerPurchaseOrder')
+const routerReview=require('./routerReview')
 
 const router = Router();
 
@@ -14,6 +16,8 @@ router.use(routerShippingAddress)
 router.use(routerCategory)
 router.use(routerPaymentMethod)
 router.use(routerPurchaseCart)
+router.use(routerPurchaseOrder)
+router.use(routerReview)
 
 
 module.exports = router;
