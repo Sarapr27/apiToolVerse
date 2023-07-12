@@ -20,7 +20,7 @@ const getAllPurchaseOrder = async (req, res) =>{
 const getPurchaseOrderById = async (req, res)=>{
           try{
             const {id} = req.params;
-            const order = await PurchaseOrder.findByPk({
+            const order = await PurchaseOrder.findOne({
                 where :{ id: id },
                 include:[
                       {model: PurchaseCart},
