@@ -74,6 +74,7 @@ const createOneProduct = async (obj) => {
                 brand: obj.brand,
                 name: obj.name,
                 model: obj.model,
+                feature: obj.feature,
                 detail: obj.detail,
                 price: obj.price,
                 image: obj.image,
@@ -98,6 +99,7 @@ const createProducts = async(req, res) => {
                 brand: "string",
                 name: "string",
                 model: "string",
+                feature: "string",
                 detail: "string",
                 price: "number",
                 image: "string"
