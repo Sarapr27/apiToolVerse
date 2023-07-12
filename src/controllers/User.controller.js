@@ -1,4 +1,6 @@
 const { User, PurchaseCart, PurchaseOrder,ShippingAddress,Review } = require("../db");
+const {Op} = require("sequelize");
+
 
 const getAllUsers = async (req, res) => {
   try {
@@ -14,7 +16,7 @@ const getAllUsers = async (req, res) => {
     });
     return res.json(user);
   } catch (error) {
-    res.status(404).json({ error: "user not found" });
+    res.status(404).json({ error:error.message });
   }
 };
 
@@ -36,42 +38,35 @@ const getUserById = async (req, res) => {
     });
     res.json(user);
   } catch (error) {
-    res.status(404).json({ error: "user not found" });
+    res.status(404).json({ error: error.message });
   }
 };
 
 const getUserByName = async (req, res) => {
-  const { firstName } = req.query;
   try {
-    const search = firstName.split(" ");
-
-    const searchName = search.map((value) => ({
-      [Op.or]: [
-        {
-          name: {
-            [Op.iLike]: `%${value}%`,
-          },
-        },
-      ],
-    }));
-
+    const { firstName } = req.query;
     const user = await User.findAll({
       where: {
-        [Op.and]: searchName,
+        firstName: {
+          [Op.iLike]: `%${firstName}%`
+        }
       },
     });
+    if(!user.length) throw new Error('The user does not exist');
     res.json(user);
   } catch (error) {
-    res.status(404).json({ error: "User not found" });
+    res.status(404).json({ error: error.message });
   }
 };
 
 const newUser = async (req, res) => {
   try {
     const { email, password, firstName, lastName, role, phone } = req.body;
-    if (!email || !password || !firstName || !lastName || !role || !phone) {
-      throw new Error(`Invalid`);
-    }
+    Object.keys(req.body).forEach(key=>{
+      if(!req.body[key]){
+        throw new Error(`Empty ${key} field`)
+      }
+    })
     const user = await User.create({
       email,
       password,
@@ -82,7 +77,7 @@ const newUser = async (req, res) => {
     });
     res.json(user);
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(404).json(error.message);
   }
 };
 

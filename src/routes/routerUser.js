@@ -3,7 +3,8 @@ const { getAllUsers, newUser, getUserById, getUserByName, updateUser, deleteUser
 
 const router=Router()
 
-router.route('/user').get(getAllUsers).post(newUser).get(getUserByName)
+router.route('/user').get(getAllUsers).post(newUser)
+router.get('/user/name',getUserByName)
 
 router.route('/user/:id').get(getUserById).put(updateUser).delete(deleteUser)
 
