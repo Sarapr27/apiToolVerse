@@ -8,7 +8,8 @@ const router = Router();
 /* Products                         */
 /* ----------------------------------- */
 
-router.route('/product').get(getAllProducts).post(createProducts).get(getProductByName)
+router.route('/product').get(getAllProducts).post(createProducts)
+router.get('/product/name',getProductByName)
 router.route('/product/:id').get(getProductById)
 
 

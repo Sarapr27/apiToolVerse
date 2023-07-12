@@ -1,9 +1,11 @@
-const {Category}=require('../db')
+const {Category,Product}=require('../db')
 
 
 const getAllCategory=async(req,res)=>{
     try {
-        const category=await Category.findAll()
+        const category=await Category.findAll({
+          include:[{model:Product}]
+        })
         res.json(category)
     } catch (error) {
         res.status(404).json({error: error.message})
@@ -13,7 +15,12 @@ const getAllCategory=async(req,res)=>{
 
 const getCategoryByid=async(req,res)=>{
     try {
-        const category=await Category.findByPk(req.params.id)
+        const category=await Category.findOne({
+          where:{
+           id:req.params.id
+          },
+          include:[{model:Product}]
+        })
         res.json(category)
     } catch (error) {
         res.status(404).json({error: error.message})
@@ -23,6 +30,7 @@ const getCategoryByid=async(req,res)=>{
 const createCategory = async (req, res) => {
     try {
       const { name } = req.body;
+      if(!name)throw new Error(`Type the ${name}`)
       const [category, created] = await Category.findOrCreate({
         where: { name },
         defaults: { name }

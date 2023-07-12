@@ -2,9 +2,7 @@ const {PurchaseCart,User}=require('../db')
 
 const getAllPurchaseCart=async(req,res)=>{
     try {
-        const purchase=await PurchaseCart.findAll({
-            include:[{model:User}]
-        })
+        const purchase=await PurchaseCart.findAll()
         res.json(purchase)
     } catch (error) {
         res.status(404).json({error: error.message})
