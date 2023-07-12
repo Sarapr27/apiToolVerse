@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
       primaryKey: true
     },
     name: {
-      type: DataTypes.ENUM("Electricidad", "Plomería", "Herramientas", "Materiales de construcción"),
+      type: DataTypes.ENUM("Eléctricos", "Manuales", "Inalámbricos", "Neumáticos", "Hogar"),
       allowNull: false,
     },
   },{timestamps: false});
