@@ -2,10 +2,11 @@ require('dotenv').config();
 const { Sequelize } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
-const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
+const bcrypt=require('bcrypt')
+const { DB_USER, DB_PASSWORD, DB_HOST,DB_PORT } = process.env;
 
 const sequelize = new Sequelize(
-   `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/toolverse`,
+   `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/toolverse`,
    {
       logging: false, // set to console.log to see the raw SQL queries
       native: false, // lets Sequelize know we can use pg-native for ~30% more speed
@@ -40,7 +41,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
 
-const { Category, PaymentMethod, Product, PurchaseCart, PurchaseDetail, PurchaseOrder, ShippingAddress, User, Review } = sequelize.models;
+const { PaymentMethod, Product, PurchaseCart, PurchaseDetail, PurchaseOrder, ShippingAddress, User, Review } = sequelize.models;
 // Aca vendrian las relaciones
 //1--> Usuario - Carrito
 User.hasMany(PurchaseCart);
@@ -54,9 +55,6 @@ ShippingAddress.belongsTo(User);
 //4--> Carrito - Producto
 PurchaseCart.hasMany(Product);
 Product.belongsTo(PurchaseCart);
-//5--> Categoria - Producto
-Category.belongsToMany(Product, { through: "product_categories" });
-Product.belongsToMany(Category, { through: "product_categories" });
 //6--> Direccion de envio - Orden de compra
 ShippingAddress.hasMany(PurchaseOrder);
 PurchaseOrder.belongsTo(ShippingAddress);
@@ -79,7 +77,36 @@ Review.belongsTo(Product);
 PurchaseCart.hasOne(PurchaseOrder);
 PurchaseOrder.belongsTo(PurchaseCart);
 
+User.login=(email,password)=>{
+   //Buscar usuario bueno no puede ser mas chico xd
+   return User.findOne({
+     where:{
+       email
+     }
+   }).then(user=>{
+     if(!user)return null
+     return user.authenticatePassword(password).then(valid=>valid?user:null)
+   })
+ }
+ User.prototype.authenticatePassword = function(password){
+     return new Promise((res,rej)=>{
+       bcrypt.compare(password,this.password_hash,function(err,valid){
+         if(err) return rej(err)
+         res(valid)
+       })
+     })
+ }
 
+User.beforeCreate((user,options)=>{
+   return new Promise((resolve,reject)=>{
+      if(user.password){
+         bcrypt.hash(user.password,10,(error,hash)=>{
+            user.password_hash = hash;
+            resolve()
+         })
+      }
+   })
+})
 module.exports = {
    ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
    conn: sequelize, // para importart la conexión { conn } = require('./db.js');

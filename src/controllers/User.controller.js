@@ -1,6 +1,9 @@
 const { User, PurchaseCart, PurchaseOrder,ShippingAddress,Review } = require("../db");
 const {Op} = require("sequelize");
 
+const newPage=(req,res)=>{
+  res.render('registrations/new')
+}
 
 const getAllUsers = async (req, res) => {
   try {
@@ -111,4 +114,5 @@ module.exports = {
   newUser,
   updateUser,
   deleteUser,
+  newPage
 };
