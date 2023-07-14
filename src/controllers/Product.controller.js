@@ -1,5 +1,5 @@
 require("dotenv").config();
-const {Product, Category} = require("../db");
+const {Product} = require("../db");
 const {Op, literal} = require("sequelize");
 
 /* ----------------------------------- */
@@ -8,7 +8,7 @@ const {Op, literal} = require("sequelize");
 
 const getAllProducts = async(req, res) => {
     try {
-        const products = await Product.findAll({include: Category});
+        const products = await Product.findAll();
         return res.status(200).json(products);
     } catch (error) {
         res.status(404).json({error: "Products not found"});
