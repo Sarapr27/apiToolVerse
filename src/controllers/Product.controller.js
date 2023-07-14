@@ -20,7 +20,7 @@ const getProductById = async(req, res) => {
     const {id} = req.params;
 
     try {
-        const product = await Product.findByPk(id, {include: Category});
+        const product = await Product.findByPk(id);
         res.status(200).json(product);
         
     } catch (error) {
