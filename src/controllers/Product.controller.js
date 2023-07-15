@@ -54,7 +54,6 @@ try {
         where: {
             [Op.and]: whereClause
         },
-        include: Category
     });
     res.status(200).json(product)
 
