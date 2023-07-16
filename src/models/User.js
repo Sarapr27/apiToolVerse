@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
       allowNull: false,
       unique: true,
     },
-    password_hash: {
+    password: {
       type: DataTypes.STRING,
     },
     firstName: {
@@ -34,9 +34,6 @@ module.exports = (sequelize) => {
       allowNull: false,
       unique: true,
     },
-    password:{
-      type:DataTypes.VIRTUAL
-    }
   },{timestamps: false});
 };
 
