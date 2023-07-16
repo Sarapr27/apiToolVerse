@@ -41,12 +41,17 @@ sequelize.models = Object.fromEntries(capsEntries);
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
 
-const { PaymentMethod, Product, PurchaseCart, PurchaseDetail, PurchaseOrder, ShippingAddress, User, Review } = sequelize.models;
+const { PaymentMethod, Product, PurchaseCart, PurchaseDetail, PurchaseOrder, ShippingAddress, User, Review,Task } = sequelize.models;
 // Aca vendrian las relaciones
 //1--> Usuario - Carrito
+// console.log(sequelize.models)
 User.hasMany(PurchaseCart);
 PurchaseCart.belongsTo(User);
 //2--> Usuario - Orden de compra
+
+User.hasMany(Task)
+Task.belongsTo(User);
+
 User.hasMany(PurchaseOrder);
 PurchaseOrder.belongsTo(User);
 //3--> Usuario - Direccion de envio
@@ -77,36 +82,36 @@ Review.belongsTo(Product);
 PurchaseCart.hasOne(PurchaseOrder);
 PurchaseOrder.belongsTo(PurchaseCart);
 
-User.login=(email,password)=>{
-   //Buscar usuario bueno no puede ser mas chico xd
-   return User.findOne({
-     where:{
-       email
-     }
-   }).then(user=>{
-     if(!user)return null
-     return user.authenticatePassword(password).then(valid=>valid?user:null)
-   })
- }
- User.prototype.authenticatePassword = function(password){
-     return new Promise((res,rej)=>{
-       bcrypt.compare(password,this.password_hash,function(err,valid){
-         if(err) return rej(err)
-         res(valid)
-       })
-     })
- }
+// User.login=(email,password)=>{
+//    //Buscar usuario bueno no puede ser mas chico xd
+//    return User.findOne({
+//      where:{
+//        email
+//      }
+//    }).then(user=>{
+//      if(!user)return null
+//      return user.authenticatePassword(password).then(valid=>valid?user:null)
+//    })
+//  }
+//  User.prototype.authenticatePassword = function(password){
+//      return new Promise((res,rej)=>{
+//        bcrypt.compare(password,this.password_hash,function(err,valid){
+//          if(err) return rej(err)
+//          res(valid)
+//        })
+//      })
+//  }
 
-User.beforeCreate((user,options)=>{
-   return new Promise((resolve,reject)=>{
-      if(user.password){
-         bcrypt.hash(user.password,10,(error,hash)=>{
-            user.password_hash = hash;
-            resolve()
-         })
-      }
-   })
-})
+// User.beforeCreate((user,options)=>{
+//    return new Promise((resolve,reject)=>{
+//       if(user.password){
+//          bcrypt.hash(user.password,10,(error,hash)=>{
+//             user.password_hash = hash;
+//             resolve()
+//          })
+//       }
+//    })
+// })
 module.exports = {
    ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
    conn: sequelize, // para importart la conexión { conn } = require('./db.js');
