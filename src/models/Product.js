@@ -36,6 +36,10 @@ module.exports = (sequelize) => {
     image: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    category: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
     }
   },{timestamps: false});
 };

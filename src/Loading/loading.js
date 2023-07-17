@@ -28,6 +28,7 @@ const createDbTools = async () => {
                 detail: tool.detail,
                 price: tool.price,
                 image: tool.image,
+                category: tool.category.map((e)=>e.name),
             }
         })
     }
