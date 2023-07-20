@@ -7,6 +7,7 @@ const routerPurchaseOrder=require('./routerPurchaseOrder')
 const routerReview=require('./routerReview')
 const routerAuth=require('./auth.routes')
 const routerTasks=require('./router.Tasks')
+const routerStock=require('./router.stock')
 
 
 const router = Router();
@@ -19,6 +20,7 @@ router.use(routerPurchaseCart)
 router.use(routerPurchaseOrder)
 router.use(routerReview)
 router.use(routerTasks)
+router.use(routerStock)
 
 
 

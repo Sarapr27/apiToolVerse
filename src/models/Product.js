@@ -40,6 +40,11 @@ module.exports = (sequelize) => {
     category: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
+    },
+    stock: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 15, // Establecer el valor predeterminado en 15
     }
   },{timestamps: false});
 };
