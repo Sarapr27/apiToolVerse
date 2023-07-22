@@ -40,7 +40,6 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-
 const { PaymentMethod, Product, PurchaseCart, PurchaseDetail, PurchaseOrder, ShippingAddress, User, Review,Task, StockMovement } = sequelize.models;
 // Aca vendrian las relaciones
 //1--> Usuario - Carrito
@@ -84,6 +83,10 @@ PurchaseOrder.belongsTo(PurchaseCart);
 // Establecemos la relación con el modelo de Producto
 Product.hasMany(StockMovement);
 StockMovement.belongsTo(Product);
+// Agrego Relacion User/PurchaseCart
+User.hasMany(PurchaseCart);
+PurchaseCart.belongsTo(User);
+
 // User.login=(email,password)=>{
 //    //Buscar usuario bueno no puede ser mas chico xd
 //    return User.findOne({
