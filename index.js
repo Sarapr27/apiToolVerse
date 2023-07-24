@@ -24,7 +24,7 @@ const {loadPaymentMethods} = require('./src/controllers/PaymentMethod.controller
 const port = process.env.PORT || 3001;
 
 // Syncing all the models at once.
-conn.sync({ alter: true }).then(async() => {
+conn.sync({ force: true }).then(async() => {
   await createDbTools();
   await createDbCategories();
   await loadPaymentMethods();
