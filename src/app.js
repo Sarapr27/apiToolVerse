@@ -1,26 +1,19 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
 const routes = require('./routes/index.js');
 require('./db.js');
-const cookieParser =require('cookie-parser');
+const cors = require("cors");
 const server = express();
-const mercadopago = require("mercadopago")
 server.name = 'API';
 
+const corsOptions = {
+  origin: 'http://localhost:3000', //esta url se debe cambia a la de deploy del front cuando no se este trabajando localmente ('https://clienttoolverse-production.up.railway.app')
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+};
 
-server.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-server.use(bodyParser.json({ limit: '50mb' }));
-server.use(morgan('dev'));
-server.use(cookieParser())
-server.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // Reemplaza con el dominio correcto del front-end
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-  next();
-});
-
+server.use(cors(corsOptions));
+server.use(express.json());
 server.use(routes);
 
 
