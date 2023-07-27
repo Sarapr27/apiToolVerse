@@ -11,7 +11,7 @@ let preference = {
     items: [],
     
     back_urls: {
-        success: 'http://localhost:3000/home',
+        success: 'http://localhost:3000/feedback',
         failure: 'http://localhost:3000/error',
         pending: 'http://localhost:3000/home',
     },
@@ -40,4 +40,12 @@ let preference = {
     });
 };
 
-module.exports = { createPayment };
+const feedbackPayment = (req, res) => {
+  res.json({
+		Payment: req.query.payment_id,
+		Status: req.query.status,
+		MerchantOrder: req.query.merchant_order_id
+	});
+}
+
+module.exports = { createPayment, feedbackPayment };
