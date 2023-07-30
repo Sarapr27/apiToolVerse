@@ -46,5 +46,5 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: 15, // Establecer el valor predeterminado en 15
     }
-  },{timestamps: false});
+  },{timestamps: true});
 };
