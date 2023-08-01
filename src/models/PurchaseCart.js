@@ -9,9 +9,19 @@ module.exports = (sequelize) => {
       autoIncrement: true,
       primaryKey: true
     },
-    quantity: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-  },{timestamps: false});
+    address: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    }
+  }, { timestamps: false });
 };

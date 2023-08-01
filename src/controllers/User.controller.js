@@ -1,7 +1,7 @@
-const { User, PurchaseCart, PurchaseOrder,ShippingAddress,Review } = require("../db");
-const {Op} = require("sequelize");
+const { User, PurchaseCart, PurchaseOrder, ShippingAddress, Review } = require("../db");
+const { Op } = require("sequelize");
 
-const newPage=(req,res)=>{
+const newPage = (req, res) => {
   res.render('registrations/new')
 }
 
@@ -111,8 +111,8 @@ const getUserByName = async (req, res) => {
 const newUser = async (req, res) => {
   try {
     const { email, password, firstName, lastName, role, phone } = req.body;
-    Object.keys(req.body).forEach(key=>{
-      if(!req.body[key]){
+    Object.keys(req.body).forEach(key => {
+      if (!req.body[key]) {
         throw new Error(`Empty ${key} field`)
       }
     })
@@ -141,7 +141,7 @@ const updateUser = async (req, res) => {
     // Actualizar los datos del usuario y guardarlos en la base de datos
     user.set(req.body);
     await user.save();
-    
+
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });

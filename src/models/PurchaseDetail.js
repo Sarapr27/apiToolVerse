@@ -9,6 +9,14 @@ module.exports = (sequelize) => {
       autoIncrement: true,
       primaryKey: true
     },
+    purchaseCartId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    productId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     quantity: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -16,6 +24,10 @@ module.exports = (sequelize) => {
     price: {
       type: DataTypes.FLOAT,
       allowNull: false,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
     }
-  },{timestamps: false});
+  }, { timestamps: false });
 };
