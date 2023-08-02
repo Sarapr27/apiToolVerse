@@ -12,6 +12,7 @@ const routerUser=require('./routerUser')
 const routerPurchaseDetail=require('./routerPurchaseDetail')
 const routerMercadoPago=require('./routerMercadoPago')
 const routerCategory=require("./routeCategory")
+const routerCloudinary=require("./routerCloudinary")
 
 
 const router = Router();
@@ -29,6 +30,7 @@ router.use(routerUser)
 router.use(routerPurchaseDetail)
 router.use(routerMercadoPago)
 router.use(routerCategory)
+router.use(routerCloudinary)
 
 
 
