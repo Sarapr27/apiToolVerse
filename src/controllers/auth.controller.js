@@ -13,87 +13,107 @@ const REFRESH_TOKEN = "1//04yFomw_XoiMaCgYIARAAGAQSNwF-L9IrDo1v4oHXy4Wer4t2s7x3v
 
 const register = async (req, res) => {
   const { email, password, firstName, lastName, role, phone } = req.body;
-
+  
   try {
-    const userFound = await User.findOne({ where: { email } })
-    if (userFound) return res.status(400).json({ message: "the email already exists" })
-    const password_hash = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
-      email,
-      password: password_hash,
-      firstName,
-      lastName,
-      role,
-      phone,
-    });
-    const userSaved = await user.save();
-    const token = await createAccessToken({ id: userSaved.id });
-    res.cookie("token", token);
-
-    const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
-    oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN })
-
-    const contentHtml = `
-    <h1>Bienvenido a Toolverse</h1>
-    <p>Tu correo registrado es ${email}</p>
-    `
-    const accesesToken = await oAuth2Client.getAccessToken()
-    const transport = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        type: "OAuth2",
-        user: "rojas650634@gmail.com",
-        clientId: CLIENT_ID,
-        clientSecret: CLIENT_SECRET,
-        refreshToken: REFRESH_TOKEN,
-        accessToken: accesesToken
-      }
-    })
-    const mailOptions = {
-      from: "Pagina de prueba",
-      to: email,
-      subject: "Nodemailer Prueba",
-      html: contentHtml
-    }
-    const result = await transport.sendMail(mailOptions)
-    res.json({
-      id: userSaved.id,
-      email: userSaved.email,
-      password: userSaved.password,
-    });
-  } catch (error) {
-    res.status(500).json(error.message);
+  console.log("Datos enviados en la solicitud REGISTER:", req.body);
+  const userFound = await User.findOne({ where: { email } })
+  if (userFound) return res.status(400).json({ message: "the email already exists" })
+  const password_hash = await bcrypt.hash(password, 10);
+  
+  const user = await User.create({
+  email,
+  password: password_hash,
+  firstName,
+  lastName,
+  role,
+  phone,
+  });
+  const userSaved = await user.save();
+  const token = await createAccessToken({ id: userSaved.id });
+  res.cookie("token", token,{
+  sameSite:'none',
+  secure: true
+  });
+  
+  const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+  oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN })
+  
+  const contentHtml = `
+  <h1>Bienvenido a Toolverse</h1>
+  <p>Tu correo registrado es ${email}</p>
+  `
+  const accesesToken = await oAuth2Client.getAccessToken()
+  const transport = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+  type: "OAuth2",
+  user: "rojas650634@gmail.com",
+  clientId: CLIENT_ID,
+  clientSecret: CLIENT_SECRET,
+  refreshToken: REFRESH_TOKEN,
+  accessToken: accesesToken
   }
-};
-
-
-const login = async (req, res) => {
+  })
+  const mailOptions = {
+  from: "Pagina de prueba",
+  to: email,
+  subject: "Nodemailer Prueba",
+  html: contentHtml
+  }
+  const result = await transport.sendMail(mailOptions)
+  res.json({
+  id: userSaved.id,
+  email: userSaved.email,
+  password: userSaved.password,
+  });
+  } catch (error) {
+  res.status(500).json(error.message);
+  }
+  };
+  
+  const login = async (req, res) => {
   const { email, password } = req.body;
-
+  
   try {
-    const userFound = await User.findOne({ where: { email } });
-
-    if (!userFound) return res.status(400).json({ message: "User not found" });
-
-    const isMatch = await bcrypt.compare(password, userFound.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Incorrect password" });
-
-    const token = await createAccessToken({ id: userFound.id });
-    res.cookie("token", token);
-    res.json({
-      id: userFound.id,
-      email: userFound.email,
-      password: userFound.password,
-      firstName: userFound.firstName,
-      lastName: userFound.lastName,
-      phone: userFound.phone
-    });
-  } catch (error) {
-    res.status(500).json(error.message);
+  console.log("Datos enviados en la solicitud LOGIN:", req.body);
+  
+  const userFound = await User.findOne({ where: { email } });
+  
+  if (!userFound) {
+  console.log("Usuario no encontrado");
+  return res.status(400).json({ message: "User not found" });
   }
-};
+  
+  const isMatch = await bcrypt.compare(password, userFound.password);
+  if (!isMatch) {
+  console.log("Contraseña incorrecta");
+  return res.status(400).json({ message: "Incorrect password" });
+  }
+  
+  const token = await createAccessToken({ id: userFound.id });
+  console.log("Token generado:", token);
+  
+  res.cookie("token", token, {
+  sameSite: 'none',
+  secure: true
+  });
+  
+  res.json({
+  id: userFound.id,
+  email: userFound.email,
+  password: userFound.password,
+  firstName: userFound.firstName,
+  lastName: userFound.lastName,
+  phone: userFound.phone,
+  token: token // Asegurémonos de incluir el token en la respuesta JSON
+  });
+  } catch (error) {
+  console.log("Error en el controlador de login:", error.message);
+  res.status(500).json(error.message);
+  }
+  };
+  
+  
 
 const logout = (req, res) => {
   res.cookie('token', "", {
