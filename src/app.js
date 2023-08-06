@@ -5,12 +5,6 @@ const cors = require("cors");
 const cookieParser = require('cookie-parser');
 const server = express();
 server.name = 'API';
-const cloudinary = require("cloudinary").v2;
-cloudinary.config({
-  cloud_name: process.env.API_IMAGE_TOOLS,
-  api_key: process.env.API_IMAGE_API_KEY,
-  api_secret: process.env.API_IMAGE_API_SECRET,
-});
 
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' ? 'https://clienttoolverse-production.up.railway.app' : 'http://localhost:3000',
