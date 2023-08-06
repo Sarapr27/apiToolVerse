@@ -1,4 +1,4 @@
-const {PurchaseCart,User, Product}=require('../db')
+const {PurchaseCart,User}=require('../db')
 
 const getAllPurchaseCart=async(req,res)=>{
     try {
@@ -22,11 +22,9 @@ const getPurchaseCartId=async(req,res)=>{
 
 const createPurchaseCart = async (req, res) => {
   try {
-    const { quantity, userId, productId } = req.body;
+    const { userId} = req.body;
     const purchase = await PurchaseCart.create({
-      quantity: quantity,
       userId: userId,
-      productId: productId,
     });
     return res.status(201).json(purchase);
   } catch (error) {
@@ -55,7 +53,7 @@ const createPurchaseCart = async (req, res) => {
   const updatePurchaseCart = async (req, res) => {
     try {
       const { id } = req.params;
-      const { quantity, userId, productId } = req.body;
+      const { quantity, userId } = req.body;
   
       // Verificar si la compra existe en la base de datos
       const purchase = await PurchaseCart.findByPk(id);
@@ -66,7 +64,6 @@ const createPurchaseCart = async (req, res) => {
       // Actualizar los datos de la compra
       purchase.quantity = quantity;
       purchase.userId = userId;
-      purchase.productId = productId;
       await purchase.save();
   
       // Responder con los datos actualizados de la compra
