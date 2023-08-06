@@ -46,46 +46,56 @@ const { PaymentMethod, Product, PurchaseCart, PurchaseDetail, PurchaseOrder, Shi
 // console.log(sequelize.models)
 User.hasMany(PurchaseCart);
 PurchaseCart.belongsTo(User);
+
 //2--> Usuario - Orden de compra
-
-User.hasMany(Task)
-Task.belongsTo(User);
-
 User.hasMany(PurchaseOrder);
 PurchaseOrder.belongsTo(User);
+
 //3--> Usuario - Direccion de envio
 User.hasOne(ShippingAddress);
 ShippingAddress.belongsTo(User);
-//4--> Carrito - Producto
-PurchaseCart.hasMany(Product);
-Product.belongsTo(PurchaseCart);
+
+//4--> Detalle - Producto
+PurchaseDetail.hasOne(Product);
+Product.belongsTo(PurchaseDetail);
+
 //6--> Direccion de envio - Orden de compra
 ShippingAddress.hasMany(PurchaseOrder);
 PurchaseOrder.belongsTo(ShippingAddress);
+
 //7--> Metodo de Pago - Orden de Compra
 PaymentMethod.hasMany(PurchaseOrder);
 PurchaseOrder.belongsTo(PaymentMethod);
+
 //8--> Orden de compra - Detalle de compra
-PurchaseOrder.hasMany(PurchaseDetail);
-PurchaseDetail.belongsTo(PurchaseOrder);
+// PurchaseOrder.hasMany(PurchaseDetail);
+// PurchaseDetail.belongsTo(PurchaseOrder);
+PurchaseCart.hasMany(PurchaseDetail);
+PurchaseDetail.belongsTo(PurchaseCart);
+
 //9--> Producto - Detalle de compra
 Product.hasMany(PurchaseDetail);
 PurchaseDetail.belongsTo(Product);
+
 //10--> Usuario - Review
 User.hasMany(Review);
 Review.belongsTo(User);
+
 //11--> Review - Product
 Product.hasMany(Review);
 Review.belongsTo(Product);
+
 //12--> Carrito - Orden de compra
 PurchaseCart.hasOne(PurchaseOrder);
 PurchaseOrder.belongsTo(PurchaseCart);
+
+//14--> User - Task
+User.hasMany(Task)
+Task.belongsTo(User);
+
 // Establecemos la relación con el modelo de Producto
 Product.hasMany(StockMovement);
 StockMovement.belongsTo(Product);
-// Agrego Relacion User/PurchaseCart
-User.hasMany(PurchaseCart);
-PurchaseCart.belongsTo(User);
 
 //Agrego la Relacion Product/Category
 Product.hasMany(Category)

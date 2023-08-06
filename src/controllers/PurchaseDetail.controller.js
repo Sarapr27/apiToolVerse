@@ -1,11 +1,11 @@
-const {PurchaseDetail, PurchaseOrder, Product} = require('../db');
+const {PurchaseDetail, Product, PurchaseCart} = require('../db');
 
 const getAllPurchaseDetail = async (req, res) => {
       try{
         const detail  = await PurchaseDetail.findAll({
              include:[
-                     {model: PurchaseOrder},
-                     {model: Product}
+                     {model: Product},
+                     {model: PurchaseCart}
              ],
         });
         if (!detail) {
@@ -25,8 +25,8 @@ const getPurchaseDetailById = async (req, res) => {
         const detail = await PurchaseDetail.findOne({
             where:{id:id},
             include: [
-                {model: PurchaseOrder},
-                {model: Product}
+                {model: Product},
+                {model: PurchaseCart}
             ],
         });
 
@@ -43,31 +43,39 @@ const getPurchaseDetailById = async (req, res) => {
 
 const createPurchaseDetail = async (req, res) => {
   try {
-    const { purchaseOrderId, productId, quantity, price } = req.body;
+    const { productId, quantity, purchaseCartId } = req.body;
 
     // Verificar si se proporcionan todos los atributos requeridos
-    if (!purchaseOrderId || !productId || !quantity || !price) {
+    if (!productId || !quantity || !purchaseCartId) {
       return res.status(400).json({ error: "All attributes are required" });
     }
 
-    // Verificar si la orden de compra existe
-    const purchaseOrder = await PurchaseOrder.findOne({
-      where: { id: purchaseOrderId },
+    // Verificar si el carrito existe
+    const purchaseCart = await PurchaseCart.findOne({
+      where: { id: purchaseCartId },
     });
 
-    if (!purchaseOrder) {
-      return res.status(404).json({ error: "Purchase Order not found" });
+    if (!purchaseCart) {
+      return res.status(404).json({ error: "Purchase Cart not found" });
     }
 
-    // Si la orden de compra existe, crear el detalle de compra
-    const createdDetail = await PurchaseDetail.create({
-      purchaseOrderId,
-      productId,
-      quantity,
-      price,
+    // Verificar si ya existe un detalle de compra para el producto en el carrito
+    const existingDetail = await PurchaseDetail.findOne({
+      where: { purchaseCartId, productId },
     });
 
-    return res.status(201).json(createdDetail);
+    if (existingDetail) {
+      // Si el detalle ya existe, devolvemos un mensaje indicando que ya está en el carrito
+      return res.status(200).json({ message: "Product already in the cart" });
+    } else {
+      // Si el detalle no existe, creamos un nuevo detalle
+      const createdDetail = await PurchaseDetail.create({
+        purchaseCartId,
+        productId,
+        quantity,
+      });
+      return res.status(201).json(createdDetail);
+    }
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -89,7 +97,7 @@ const deletePurchaseDetail = async (req, res) => {
 const updatePurchaseDetail = async (req, res) => {
   try {
     const { id } = req.params;
-    const { purchaseOrderId, productId, quantity, price } = req.body;
+    const { productId, quantity, purchaseCartId} = req.body;
 
     // Verificar si el detalle de compra existe en la base de datos
     const purchaseDetail = await PurchaseDetail.findByPk(id);
@@ -97,15 +105,15 @@ const updatePurchaseDetail = async (req, res) => {
       return res.status(404).json({ message: 'Purchase Detail not exist' });
     }
 
-    // Verificar si la orden de compra existe
-    const purchaseOrder = await PurchaseOrder.findOne({
-      where: { id: purchaseOrderId },
+    // Verificar si el Carrito existe
+    const purchaseCart = await PurchaseCart.findOne({
+      where: { id: purchaseCartId },
     });
-    if (!purchaseOrder) {
-      return res.status(404).json({ error: 'Purchase Order not exist' });
+    if (!purchaseCart) {
+      return res.status(404).json({ error: 'Purchase Cart not exist' });
     }
 
-    // Verificar si el producto existe
+     // Verificar si el producto existe
     const product = await Product.findOne({
       where: { id: productId },
     });
@@ -114,10 +122,9 @@ const updatePurchaseDetail = async (req, res) => {
     }
 
     // Actualizar los datos del detalle de compra
-    purchaseDetail.purchaseOrderId = purchaseOrderId;
+    purchaseCart.purchaseCartId = purchaseCartId;
     purchaseDetail.productId = productId;
     purchaseDetail.quantity = quantity;
-    purchaseDetail.price = price;
     await purchaseDetail.save();
 
     return res.status(200).json(purchaseDetail);
