@@ -1,44 +1,44 @@
-const {PurchaseDetail, Product, PurchaseCart} = require('../db');
+const { PurchaseDetail, Product, PurchaseCart } = require('../db');
 
 const getAllPurchaseDetail = async (req, res) => {
-      try{
-        const detail  = await PurchaseDetail.findAll({
-             include:[
-                     {model: Product},
-                     {model: PurchaseCart}
-             ],
-        });
-        if (!detail) {
-          return res.status(404).json({ error: "No purchase details" });
-        }
-    
-        res.json(detail);
+  try {
+    const detail = await PurchaseDetail.findAll({
+      include: [
+        { model: Product },
+        { model: PurchaseCart }
+      ],
+    });
+    if (!detail) {
+      return res.status(404).json({ error: "No purchase details" });
+    }
 
-      }catch(error){
-        res.status(404).json({error: "Purchase Detail not found"});
-      } 
+    res.json(detail);
+
+  } catch (error) {
+    res.status(404).json({ error: "Purchase Detail not found" });
+  }
 };
 
 const getPurchaseDetailById = async (req, res) => {
-      try{
-        const {id} = req.params;
-        const detail = await PurchaseDetail.findOne({
-            where:{id:id},
-            include: [
-                {model: Product},
-                {model: PurchaseCart}
-            ],
-        });
+  try {
+    const { id } = req.params;
+    const detail = await PurchaseDetail.findOne({
+      where: { id: id },
+      include: [
+        { model: Product },
+        { model: PurchaseCart }
+      ],
+    });
 
-        if (!detail) {
-          return res.status(404).json({ error: "Detail not exist" });
-        }
-    
-       res.json(detail); 
+    if (!detail) {
+      return res.status(404).json({ error: "Detail not exist" });
+    }
 
-      }catch(error){
-        res.status(404).json({error: "Purchase Detail not found"});
-      }
+    res.json(detail);
+
+  } catch (error) {
+    res.status(404).json({ error: "Purchase Detail not found" });
+  }
 };
 
 const createPurchaseDetail = async (req, res) => {
@@ -82,22 +82,46 @@ const createPurchaseDetail = async (req, res) => {
 };
 
 const deletePurchaseDetail = async (req, res) => {
-      try{
-        const {id} = req.params;
-        await PurchaseDetail.destroy({
-                         where:{id:id}
-        });
-        return res.status(200).json({ message: 'Purchase Detail deleted successfully' });
+  try {
+    const { id } = req.params;
+    await PurchaseDetail.destroy({
+      where: { id: id }
+    });
+    return res.status(200).json({ message: 'Purchase Detail deleted successfully' });
 
-      }catch(error){
-        res.status(404).json({error:error.message});
-      }
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
 };
+
+const getPurchaseDetailByPurchaseCartId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const detail = await PurchaseDetail.findAll({
+      where: { purchaseCartId: id },
+      include: [
+        { model: Product },
+        { model: PurchaseCart }
+      ],
+    });
+
+    if (!detail) {
+      return res.status(404).json({ error: "Detail not exist" });
+    }
+
+    res.status(200).json(detail);
+
+  } catch (error) {
+    console.error('id de params', id, 'Error en getPurchaseDetailByPurchaseCartId del back', error)
+    res.status(400).json({ error: "Purchase Detail not found" });
+  }
+}
+
 
 const updatePurchaseDetail = async (req, res) => {
   try {
     const { id } = req.params;
-    const { productId, quantity, purchaseCartId} = req.body;
+    const { productId, quantity, purchaseCartId } = req.body;
 
     // Verificar si el detalle de compra existe en la base de datos
     const purchaseDetail = await PurchaseDetail.findByPk(id);
@@ -113,7 +137,7 @@ const updatePurchaseDetail = async (req, res) => {
       return res.status(404).json({ error: 'Purchase Cart not exist' });
     }
 
-     // Verificar si el producto existe
+    // Verificar si el producto existe
     const product = await Product.findOne({
       where: { id: productId },
     });
@@ -136,10 +160,11 @@ const updatePurchaseDetail = async (req, res) => {
 };
 
 
-module.exports={
-    getAllPurchaseDetail,
-    getPurchaseDetailById,
-    createPurchaseDetail,
-    deletePurchaseDetail,
-    updatePurchaseDetail
+module.exports = {
+  getAllPurchaseDetail,
+  getPurchaseDetailById,
+  getPurchaseDetailByPurchaseCartId,
+  createPurchaseDetail,
+  deletePurchaseDetail,
+  updatePurchaseDetail
 };

@@ -13,6 +13,6 @@ module.exports = (sequelize) => {
     total: {
       type: DataTypes.FLOAT,
       allowNull: false,
-  },
-},{timestamps: false});
+    },
+  }, { timestamps: false });
 };
