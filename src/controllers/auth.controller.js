@@ -11,7 +11,7 @@ const register = async (req, res) => {
   const { email, password, firstName, lastName, role, phone } = req.body;
 
   try {
-    // console.log("Datos enviados en la solicitud REGISTER:", req.body);
+     console.log("Datos enviados en la solicitud REGISTER:", req.body);
     const userFound = await User.findOne({ where: { email } })
     if (userFound) return res.status(400).json({ message: "the email already exists" })
     const password_hash = await bcrypt.hash(password, 10);
