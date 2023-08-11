@@ -17,6 +17,10 @@ module.exports = (sequelize) => {
     password: {
       type: DataTypes.STRING,
     },
+    passwordGoogle: {
+      type: DataTypes.STRING,
+      defaultValue: "logingoogle", 
+    },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
